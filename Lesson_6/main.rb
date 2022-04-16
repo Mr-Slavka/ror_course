@@ -24,6 +24,7 @@
     end
 
 
+
     def menu
 
     loop do
@@ -198,12 +199,17 @@
     end
 
     def create_train!(train_type)
+      begin
       puts "Enter train number"
-      train_number = gets.chomp.to_i
+      train_number = gets.chomp.to_s
       if train_type == "cargo"
         train = CargoTrain.new(train_number)
         else train_type == "passenger"
       train = PassengerTrain.new(train_number)
+      end
+      rescue
+        puts "Enter valid train number"
+        retry
       end
       @trains << train
       puts "Added new train #{train.number}"
@@ -230,18 +236,23 @@
         list_of_stations
       index = gets.chomp.to_i
       departure_station = @stations[index]
-        puts "Add departure station#{departure_station.name}"
-        puts "Select end station "
-        list_of_stations
+        if ! @stations.include?(departure_station)
+          puts "enter a valid station"
+        else
+          puts "Add departure station#{departure_station.name}"
+          puts "Select end station "
+          list_of_stations
       index_end_station = gets.chomp.to_i
       end_station = @stations[index_end_station]
-      if departure_station == end_station
-        puts "Dispatch station equals destination station"
-      else
-        puts "Add end station #{end_station.name}"
-        add_route(route_number, departure_station, end_station)
-      end
-
+        if departure_station == end_station
+         puts "Dispatch station equals destination station"
+        elsif ! @stations.include?(end_station)
+         puts "enter a valid station"
+        else
+         puts "Add end station #{end_station.name}"
+         add_route(route_number, departure_station, end_station)
+        end
+        end
     end
 
     def list_of_routs
@@ -257,10 +268,10 @@
       route = @routes[input]
       if ! @routes.include?(route)
         puts "enter a valid route"
-        else
-      puts "route #{route.number} selected"
+      else
+        puts "route #{route.number} selected"
       end
-      route
+        route
     end
 
     def select_station
@@ -283,8 +294,11 @@
         station = select_station
         if ! @stations.include?(station)
           select_station
+        elsif route.stations.include?(station)
+          puts "this station is already on the route"
         else
-        route.add_station(station)
+          route.add_station(station)
+          puts "in route #{route.number}  arrived station #{station.name}"
         end
       end
     end
@@ -320,6 +334,7 @@
             select_route_station(route)
           else
             route.del_station(station)
+            puts "delete station #{station.name} in route #{route.number}"
           end
          end
       end
@@ -351,13 +366,19 @@
         train.route=(route)
         station = @stations[@stations.index(route.starting_station)]
         station.take_the_train(train)
-        puts "route #{route.number} added to the train #{train.number}"
+        puts "Route #{route.number} added to the train #{train.number}"
+        puts "The train #{train.number} arrived at the station #{route.starting_station.name} "
       end
     end
 
     def add_train_to_station(train)
-      station = train.station
-      station.take_the_train(train)
+         station = train.station
+      if ! station.trains.include?(train)
+         station.take_the_train(train)
+         puts "in station #{station.name}  arrived train #{train.number}"
+      else
+         puts " #{train.number} already at the station #{station.name}"
+      end
     end
 
     def station_forward(train)
@@ -371,6 +392,7 @@
            add_train_to_station(train)
            past_station = train.route.stations[train.route.stations.index(train.station)-1]
            past_station.train_departure(train)
+           puts "train #{train.number} departure station #{past_station.name}"
         end
       end
     end
@@ -387,6 +409,7 @@
           add_train_to_station(train)
           next_station = train.route.stations[train.route.stations.index(train.station)+1]
           next_station.train_departure(train)
+          puts "train #{train.number} departure station #{next_station.name}"
         end
       end
     end
@@ -403,7 +426,7 @@
       number = gets.chomp.to_i
       carriage = train.wagons[number]
       if train.wagons.include?(carriage)
-         return carriage
+        return carriage
       elsif train.wagons.length <= 0
         puts "The train has no wagons"
       else
@@ -418,6 +441,7 @@
         unhook_wagons(train)
       elsif train.wagons.length > 0
         train.wagon_uncoupling(carriage)
+        puts "wagon #{carriage.number} is uncoupled from the train #{train.number}"
       end
     end
 
@@ -435,7 +459,12 @@
 
     def list_of_trains_in_the_station
       station = select_station
-      station.train_list
+      if  station.trains.length > 0
+        station.train_list
+      else
+        puts "there are no trains at the station"
+      end
+
     end
   end
 
