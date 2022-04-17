@@ -20,9 +20,9 @@
       @speed = 0
       @station = 0
       @wagons = []
+      validate!
       @@trains << self
       register_instance
-      validate!
     end
 
     def valid?

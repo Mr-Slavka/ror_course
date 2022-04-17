@@ -14,8 +14,8 @@
       @stations = [starting_station,end_station]
       @starting_station = starting_station
       @end_station = end_station
-      register_instance
       validate!
+      register_instance
     end
 
     def valid?
