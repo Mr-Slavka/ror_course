@@ -39,13 +39,7 @@
       if self.wagons.length <= 0
         puts "The train has no wagons"
       else
-        self.wagons.each_with_index do |elem, i|
-          if elem.type == "cargo"
-            puts " #{i} - #{elem.number} -#{elem.type} - Occupied volume #{elem.occupied_volume} Free_volume #{elem.free_volume}"
-          elsif elem.type == "passenger"
-            puts " #{i} - #{elem.number} -#{elem.type} - Occupied places #{elem.occupied_places} vacancies #{elem.vacancies} "
-          end
-       end
+        self.wagons.each_with_index { |elem, i| yield(elem, i)}
       end
     end
 

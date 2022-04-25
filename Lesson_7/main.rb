@@ -430,7 +430,12 @@
     end
 
     def train_wagons_list(train)
-      train.wagons_list
+      train.wagons_list { |elem, i|
+      if elem.type == "cargo"
+        puts " #{i} - #{elem.number} -#{elem.type} - Occupied volume #{elem.occupied_place} Free_volume #{elem.free_place}"
+      elsif elem.type == "passenger"
+        puts " #{i} - #{elem.number} -#{elem.type} - Occupied places #{elem.occupied_place} vacancies #{elem.free_place} "
+      end }
     end
 
     def select_carriage(train)
@@ -491,16 +496,16 @@
         if train.class == CargoTrain
           puts "enter volume"
           volume = gets.chomp.to_i
-          carriage.take_a_volume(volume)
+          carriage.take_a_place(volume)
           puts "Carriage #{carriage.number} accepted #{volume}"
         elsif train.class == PassengerTrain
-          carriage.take_the_place
+          carriage.take_a_place
           puts "Carriage #{carriage.number} seat is occupied"
         end
       rescue
         if train.class == CargoTrain
           puts "Volume busy or insufficient"
-        elsif train.class == PassengerTrain
+          elsif train.class == PassengerTrain
           puts "All places are occupied"
         end
       end
