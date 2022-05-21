@@ -1,4 +1,3 @@
-
   module SelectionMenu
     def selection_menu(items, methods)
       items.each do |elem|
