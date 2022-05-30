@@ -8,8 +8,14 @@
       super (name)
     end
 
-    def show_card
-      self.cards.each { |card| print " *** " }
+    def take_card(deck)
+      if self.points < 17
+        puts  "Dealer takes a card"
+      @card = deck.give_card
+      self.cards << @card
+      self.points += card_point(@card)
+      else
+        puts "Dealer skips a turn"
+      end
     end
-
   end

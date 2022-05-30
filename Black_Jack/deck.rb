@@ -15,7 +15,7 @@
           @cards << Card.new(value, suit)
         end
       end
-      @cards.shuffle(random: Random.new(1))
+      @cards = @cards.shuffle
     end
 
     def give_card
