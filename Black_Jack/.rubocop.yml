@@ -13,3 +13,6 @@
 
   Metrics/MethodLength:
     Max: 12
+
+  Metrics/ClassLength:
+    Enabled: false

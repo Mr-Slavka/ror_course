@@ -45,4 +45,8 @@
     def make_a_bet
       self.money -= 10
     end
+
+    def get_money
+      self.money = 100
+    end
   end

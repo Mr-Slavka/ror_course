@@ -7,7 +7,7 @@
 
 
 
-    class Main
+    class Game
 
       include SelectionMenu
 
@@ -45,6 +45,14 @@
         0 => :exit
       }.freeze
 
+      NEXT_ROUND_MENU_ITEMS  = [' ------------------------- ', ' Play again ? ', ' 1. Yes ',
+                              ' 0. Exit ', ' Choose an option: '].freeze
+
+      NEXT_ROUND_MENU_METHODS = {
+        1 => :new_card_deal,
+        0 => :exit
+      }.freeze
+
       def choice_menu
         show_cards(@player)
         if @player.cards.count == 2
@@ -53,6 +61,11 @@
           menu_more_two_cards
         end
       end
+
+      def next_round_menu
+        selection_menu(NEXT_ROUND_MENU_ITEMS, NEXT_ROUND_MENU_METHODS)
+      end
+
 
       def menu_two_cards
         selection_menu(MENU_TWO_CARDS_ITEMS, MENU_TWO_CARDS_METHODS)
@@ -101,9 +114,9 @@
 
       def dealer_s_turn
         @dealer.take_card(@deck)
-        self.open_cards if @dealer.cards.count == 3 && @player.cards.count == 3
         puts "Dealer cards"
         @dealer.cards.each do print " * \n"
+        self.open_cards if @dealer.cards.count == 3 && @player.cards.count == 3
         choice_menu
         end
       end
@@ -114,8 +127,73 @@
       end
 
       def processing_final_cards
+        puts "-----Round over-----"
         show_cards(@player)
         show_cards(@dealer)
+        counting_points(@player.points, @dealer.points)
+        check_money
+        reset_bank
+        next_round_menu
+      end
 
+      def reset_bank
+        @bank = 0
+      end
+
+      def counting_points(player_points, dealer_points)
+         if player_points > 21 && dealer_points < 21 || (dealer_points <= 21 && player_points < dealer_points)
+           player_lost
+         elsif dealer_points > 21 && player_points <=21|| (dealer_points < 21 && player_points > dealer_points)
+           player_win
+         elsif player_points > 21 && dealer_points > 21 || player_points == dealer_points
+           draw
+         end
+      end
+
+      def  player_lost
+        @dealer.money += @bank
+        puts "Player #{@player.name} lost the round "
+      end
+
+      def  player_win
+        @player.money += @bank
+        puts "Player #{@player.name} win the round "
+      end
+
+      def  draw
+        @dealer.money += @bank/2
+        @player.money += @bank/2
+        puts "Draw"
+      end
+
+      def check_money
+          puts "Player #{@player.name} money #{@player.money}"
+          puts "Dealer money #{@dealer.money}"
+        if @player.money < 10
+          puts "You no longer have money to bet"
+          restart_menu
+        elsif @dealer.money < 10
+          puts "You won"
+          restart_menu
+        end
+      end
+
+      def restart_menu
+        puts "1.Restart game"
+        puts "0.Exit_game"
+        case gets.chomp.to_i
+        when 1
+          restart_game
+        when 0
+          exit
+        end
+      end
+
+      def restart_game
+        puts "Restart_game"
+        @round = 0
+        @dealer.get_money
+        @player.get_money
+        new_card_deal
       end
     end
