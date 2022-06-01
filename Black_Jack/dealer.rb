@@ -1,7 +1,4 @@
 
-# деньги, карты, очки
-# пропустить ход, добавить карту
-
   class Dealer < Player
 
     def initialize(name)

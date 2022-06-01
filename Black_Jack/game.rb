@@ -1,9 +1,5 @@
 
-  require_relative 'card'
-  require_relative 'deck'
-  require_relative 'player'
-  require_relative 'dealer'
-  require_relative 'Modules/selection_menu'
+    require_relative 'Modules/selection_menu'
 
 
 
@@ -15,7 +11,7 @@
 
 
       def initialize
-        print 'Введите ваше имя:'
+        print 'Enter your name:'
         @player = Player.new(gets.chomp)
         @dealer = Dealer.new('dealer')
         @bank = 0

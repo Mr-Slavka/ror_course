@@ -1,10 +1,10 @@
 
 
   class Player
-  # имя , деньги, карты, очки
+
     attr_reader :name, :cards
     attr_accessor :points, :money
-  # пропустить ход, добавить карту, открыть карты
+
 
     def initialize(name)
       @money = 100
